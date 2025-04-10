@@ -43,12 +43,11 @@ exports.login = catchAsync(async (req, res) => {
     },
   });
 });
-
-exports.refresh = catchAsync(async (req, res) => {
-  const refresh_token = req.cookies.refreshToken || req.body.refreshToken;
+exports.refresh = catchAsync(async (req, res, next) => {
+  const refresh_token = req.cookies?.refreshToken;
 
   if (!refresh_token) {
-    throw new AppError("No refresh token provided", 400);
+    return next(new AppError("Refresh token missing or expired.", 401));
   }
 
   const accessToken = await refreshToken(refresh_token);
@@ -60,19 +59,57 @@ exports.refresh = catchAsync(async (req, res) => {
   });
 });
 
-exports.logout = catchAsync(async (req, res) => {
-  const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+exports.logout = catchAsync(async (req, res, next) => {
+  const refresh_token = req.cookies?.refreshToken;
+
+  if (refresh_token) {
+    await logoutUser(refresh_token);
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User Logged out successfully",
+  });
+});
+
+exports.refreshWithToken = catchAsync(async (req, res, next) => {
+  const refresh_token = req.body.refreshToken;
+
+  if (!refresh_token) {
+    return next(new AppError("No refresh token provided", 400));
+  }
+
+  const accessToken = await refreshToken(refresh_token);
+
+  return res.status(200).json({
+    success: true,
+    message: "Access token refreshed successfully",
+    accessToken,
+  });
+});
+
+// Renamed function for handling logout with token in the body
+exports.logoutWithToken = catchAsync(async (req, res, next) => {
+  const refreshToken = req.body.refreshToken;
 
   if (!refreshToken) {
-    throw new AppError("No refresh token provided", 400);
+    return next(new AppError("No refresh token provided", 400));
   }
 
   await logoutUser(refreshToken);
 
-  // Clear the refresh token cookie
-  res.clearCookie("refreshToken");
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+  });
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: "Logged out successfully",
   });
