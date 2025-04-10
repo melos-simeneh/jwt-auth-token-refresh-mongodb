@@ -8,6 +8,7 @@ const mongoDBConnection = require("./config/db.config.js");
 const authRoutes = require("./routes/auth.routes.js");
 const { AppError, globalErrorHandler } = require("./utils/errorHandler.js");
 const rateLimit = require("express-rate-limit");
+const setupSwagger = require("./config/swagger.config.js");
 
 const app = express();
 
@@ -17,7 +18,7 @@ mongoDBConnection();
 app.use(express.json({ limit: "10kb" }));
 
 app.use(helmet());
-app.use(cors()); // This will allow all origins, but you can specify specific ones.
+app.use(cors());
 
 // Rate limiter: allow only 5 requests per IP address in 1 minute
 const limiter = rateLimit({
@@ -30,6 +31,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+app.use("/api/docs", setupSwagger());
 app.use("/api/auth", authRoutes);
 
 app.use((req, res, next) => {
@@ -38,8 +40,6 @@ app.use((req, res, next) => {
 
 // Global Error Handler (MUST be last middleware)
 app.use(globalErrorHandler);
-
-module.exports = app;
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

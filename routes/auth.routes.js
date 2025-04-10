@@ -45,6 +45,8 @@ const router = Router();
  *         description: Validation error
  *       409:
  *         description: Username already exists
+ *       422:
+ *         description: Validation Error
  */
 router.post("/signup", validateSignup, signup);
 
@@ -75,6 +77,8 @@ router.post("/signup", validateSignup, signup);
  *         description: Validation error
  *       401:
  *         description: Invalid credentials
+ *       422:
+ *         description: Validation Error
  */
 router.post("/login", validateLogin, login);
 
@@ -102,6 +106,8 @@ router.post("/login", validateLogin, login);
  *         description: Invalid refresh token
  *       401:
  *         description: Unauthorized
+ *       422:
+ *         description: Validation Error
  */
 router.post("/refresh", validateRefreshToken, refresh);
 
