@@ -109,7 +109,7 @@ router.post("/login", validateLogin, login);
  *       422:
  *         description: Validation Error
  */
-router.post("/refresh", validateRefreshToken, refresh);
+router.post("/refresh-token", validateRefreshToken, refresh);
 
 /**
  * @swagger

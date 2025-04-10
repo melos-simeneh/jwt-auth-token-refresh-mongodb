@@ -45,7 +45,7 @@ exports.login = catchAsync(async (req, res) => {
 });
 
 exports.refresh = catchAsync(async (req, res) => {
-  const refresh_token = req.cookies?.refreshToken || req.body.refreshToken;
+  const refresh_token = req.cookies.refreshToken || req.body.refreshToken;
 
   if (!refresh_token) {
     throw new AppError("No refresh token provided", 400);

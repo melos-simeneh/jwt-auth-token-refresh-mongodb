@@ -3,7 +3,6 @@ const { verifyAccessToken } = require("../utils/token.js");
 const User = require("../models/User.model.js");
 
 const auth = async (req, res, next) => {
-  // 1) Get token from header
   let token;
   if (
     req.headers.authorization &&
@@ -19,10 +18,8 @@ const auth = async (req, res, next) => {
   }
 
   try {
-    // 2) Verify token
     const decoded = verifyAccessToken(token);
 
-    // 3) Check if user still exists
     const currentUser = await User.findById(decoded.userId);
     if (!currentUser) {
       return next(
@@ -30,7 +27,6 @@ const auth = async (req, res, next) => {
       );
     }
 
-    // 4) Grant access to protected route
     req.user = currentUser;
     res.locals.user = currentUser;
     next();

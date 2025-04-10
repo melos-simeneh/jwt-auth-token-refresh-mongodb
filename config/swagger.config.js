@@ -11,8 +11,8 @@ const swaggerOptions = {
         "API for handling JWT authentication with access and refresh tokens",
       contact: {
         name: "API Support",
-        url: "https://yourdomain.com/support",
-        email: "support@yourdomain.com",
+        url: "https://melos-simeneh.vercel.app/",
+        email: "melos.simeneh@gmail.com",
       },
       license: {
         name: "MIT",
@@ -35,7 +35,7 @@ const swaggerOptions = {
       },
     },
   },
-  apis: ["./routes/auth.routes.js"],
+  apis: ["./routes/auth.routes.js", "./routes/user.routes.js"],
 };
 
 /**

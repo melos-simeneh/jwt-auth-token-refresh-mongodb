@@ -2,7 +2,7 @@ class AppError extends Error {
   constructor(message, statusCode, detail = null) {
     super(message);
     this.statusCode = statusCode;
-    this.ok = statusCode.toString().startsWith("2");
+    this.success = statusCode.toString().startsWith("2");
     this.detail = detail;
     Error.captureStackTrace(this, this.constructor);
   }
@@ -19,13 +19,13 @@ const handleValidationError = (error) => {
 const globalErrorHandler = (err, req, res, next) => {
   const {
     statusCode = 500,
-    ok = false,
+    success = false,
     message = "Internal Server Error",
     stack,
     detail,
   } = err;
 
-  const response = { ok, message };
+  const response = { success, message };
 
   if (detail) response.detail = detail;
 
