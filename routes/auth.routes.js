@@ -181,7 +181,12 @@ router.post("/logout", auth, logout);
  *         description: Invalid or expired refresh token
  *
  */
-router.post("/refresh-token-with-body", auth, refreshWithToken);
+router.post(
+  "/refresh-token-with-body",
+  auth,
+  validateRefreshToken,
+  refreshWithToken
+);
 
 /**
  * @swagger
@@ -210,6 +215,6 @@ router.post("/refresh-token-with-body", auth, refreshWithToken);
  *         description: No refresh token provided in the body
  *
  */
-router.post("/logout-with-body", auth, logoutWithToken);
+router.post("/logout-with-body", auth, validateRefreshToken, logoutWithToken);
 
 module.exports = router;
